@@ -3,17 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    //public class Hall
-    //{
-    //    public Hall(List<int> people, char symbol)
-    //    {
-    //        People = people;
-    //        Symbol = symbol;
-    //    }
-
-    //    public char Symbol { get; set; }
-    //    public List<int> People { get; set; }
-    //}
 
     public class StartUp
     {
@@ -23,10 +12,8 @@
             string[] sequence = Console.ReadLine()
                 .Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-
             var peopleList = new List<int>();
             var hallsQueue = new Queue<char>();
-
             var sequenceStack = new Stack<string>(sequence);
 
             while (sequenceStack.Any())
