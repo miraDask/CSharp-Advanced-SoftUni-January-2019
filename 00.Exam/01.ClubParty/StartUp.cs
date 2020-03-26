@@ -3,98 +3,68 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    public class Hall
-    {
-        public Hall(int capacity, char symbol)
-        {
-            Symbol = symbol;
-            Capacity = capacity;
-            People = new List<int>();
-        }
+    //public class Hall
+    //{
+    //    public Hall(List<int> people, char symbol)
+    //    {
+    //        People = people;
+    //        Symbol = symbol;
+    //    }
 
-        public char Symbol { get; set; }
-        public int Capacity { get; set; }
-
-        public List<int> People { get; set; }
-    }
+    //    public char Symbol { get; set; }
+    //    public List<int> People { get; set; }
+    //}
 
     public class StartUp
     {
         public static void Main()
         {
-            List<Hall> halls = new List<Hall>();
-
             int capacity = int.Parse(Console.ReadLine());
             string[] sequence = Console.ReadLine()
-                .Split(' ',StringSplitOptions.RemoveEmptyEntries);
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
 
-            int people = -1;
-            char hall = ' ';
-           
-            for (int i = sequence.Length -1; i >= 0; i--)
+            var peopleList = new List<int>();
+            var hallsQueue = new Queue<char>();
+
+            var sequenceStack = new Stack<string>(sequence);
+
+            while (sequenceStack.Any())
             {
+                var element = sequenceStack.Pop();
+
                 try
                 {
-                    people = int.Parse(sequence[i]);
-                }
-                catch (Exception)
-                {
-                  hall = char.Parse(sequence[i]);
-                  
-                }
-
-                if (hall != ' ' )
-                {
-                    if (!halls.Any(x => x.Symbol == hall))
+                    var people = int.Parse(element);
+                    if (!hallsQueue.Any())
                     {
-                        halls.Add(new Hall(capacity, hall));
-                       
+                        continue;
                     }
-                }
-                else 
-                {
-                    people = -1;
-                    continue;
-                }
 
-                if (people > -1)
-                {
-                    Hall currentHall = halls.First();
-
-                    if (people <= currentHall.Capacity)
+                    if (peopleList.Sum() + people <= capacity)
                     {
-                        currentHall.People.Add(people);
-                        currentHall.Capacity -= people;
-                        people = -1;
-
-                        if (currentHall.Capacity == 0)
-                        {
-                            Console.WriteLine($"{currentHall.Symbol} -> {string.Join(", ", currentHall.People)} ");
-                            halls.RemoveAt(0);
-                           
-                        }
+                        peopleList.Add(people);
                     }
                     else
                     {
-                        Console.WriteLine($"{currentHall.Symbol} -> {string.Join(", ", currentHall.People)} ");
-                        halls.RemoveAt(0);
-                        people = -1;
+                        var hall = hallsQueue.Dequeue();
 
-                        if (halls.Any())
+                        Console.WriteLine($"{hall} -> {string.Join(", ", peopleList)}");
+                        if (hallsQueue.Any())
                         {
-                            currentHall = halls.First();
-                            currentHall.People.Add(people);
-                            currentHall.Capacity -= people;
-                            people = -1;
-                            
-
+                            peopleList = new List<int>() { people };
                         }
-
+                        else
+                        {
+                            peopleList = new List<int>();
+                        }
                     }
                 }
-             
-
+                catch (Exception)
+                {
+                    var symbol = char.Parse(element);
+                    hallsQueue.Enqueue(symbol);
+                }
             }
         }
     }
